@@ -181,7 +181,7 @@ function right_expression(object){
         return (right_expression(object.left) + object.operator + right_expression(object.right));
     }
     else if(object.type == 'MemberExpression'){
-        return (single_element(object.object) + '[' + object.property.name + ']');
+        return (single_element(object.object) + '[' + right_expression(object.property) + ']');
     }
     else if(object.type =='CallExpression'){
         return (object.callee.name + '(' + get_arguments(object.arguments) + ')');
@@ -300,14 +300,17 @@ function forstmt(object){
 
 function forexpression(object){
     let value = '';
-    if (object.type == 'AssignmentExpression'){
+    if (object.kind == 'let'){
+        value = '';
+    }
+    else if (object.type == 'AssignmentExpression'){
         value = single_element(object.left) + ' ' + object.operator + ' ' + single_element(object.right);
     }
     else if (object.type == 'UpdateExpression'){
         value = object.argument.name + object.operator;
     }
     else if(object.type == 'BinaryExpression'){
-        value = right_expression(object.left) + object.operator + right_expression(object.right);
+        value = right_expression(object.left) + ' ' + object.operator + ' ' + right_expression(object.right);
     }
     else{
         value = single_element(object);
